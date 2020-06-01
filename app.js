@@ -2,24 +2,22 @@ const express = require('express');
 const path = require('path');
 const exphbs  = require('express-handlebars');
 const livereload = require("livereload");
+const connectLivereload = require("connect-livereload");
 
-var liveReloadServer = livereload.createServer();
-liveReloadServer.watch(path.join(__dirname, 'public'));
+const publicDirectory = path.join(__dirname, 'public');
 
-var connectLivereload = require("connect-livereload");
-
-var app = express();
-
-app.use(connectLivereload());
-
-liveReloadServer.server.once("connection", () => {
-    setTimeout(() => {
+const liveReloadServer = livereload.createServer();
+liveReloadServer.watch(publicDirectory);
+liveReloadServer.server.once("connection", () => {        // Listening the connection event just once to avoid entering in loop.
+    setTimeout(() => {                                    // Execute on future time.
         liveReloadServer.refresh("/");
     }, 50);
 });
 
 const app = express();
 const port = 3000;
+
+app.use(connectLivereload());
 
 /*
 Global functions that are used by templates.
