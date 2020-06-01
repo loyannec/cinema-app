@@ -30,6 +30,7 @@
   "dependencies": {
     "connect-livereload": "^0.6.1",
     "express": "^4.17.1",
+    "express-handlebars": "^4.0.4",
     "livereload": "^0.9.1",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.4"
