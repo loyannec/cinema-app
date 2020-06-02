@@ -1,0 +1,59 @@
+<div class="mt-5">
+    
+    <ul class="nav justify-content-end">
+        <li class="nav-item">
+            <a class="nav-link" href="/">Movies Home</a>
+        </li>
+        <li class="nav-item">
+            {{#if user_active}}
+                <a class="nav-link" href="/login">Logout</a>
+            {{else}}
+                <a class="nav-link" href="/login">Login</a>
+            {{/if}}
+        </li>
+
+    </ul>
+   
+    
+    <div class="row">
+        <div class="col-sm-4"><a href="{{response.poster_path}}"><img src="{{response.poster_path}}" alt="Poster Image"></a></div>
+        <div class="col-sm-8">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    {{response.title}}
+                </li>
+                <li class="list-group-item">
+                   {{response.release_date}}
+                </li>
+                <li class="list-group-item">
+                    {{response.overview}}
+                </li>
+
+                <li class="list-group-item">
+                    {{#if user_active}}
+                        <div class="rating">
+                        <form action="/userrating" method="POST">
+                            <div class="form-group">
+                                <input type="radio" name="rating" value="5" id="5">
+                                <label for="5">☆☆☆☆☆</label> 
+                                <input type="radio" name="rating" value="4" id="4">
+                                <label for="4">☆☆☆☆</label> 
+                                <input type="radio" name="rating" value="3" id="3">
+                                <label for="3">☆☆☆</label> 
+                                <input type="radio" name="rating" value="2" id="2">
+                                <label for="2">☆☆</label> 
+                                <input type="radio" name="rating" value="1" id="1">
+                                <label for="1">☆</label>
+                            </div>
+                            <button type="submit" class="btn btn-outline-primary" onclick="submitUserRating()">Rate this movie </button> 
+                    {{else}}
+                        <p>User rating :☆ </p>
+                    {{/if}}
+                    
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
