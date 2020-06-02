@@ -5,6 +5,7 @@ const port = 3000;
 require('./plugins/handlebars')(app);
 require('./plugins/express')(app);
 require('./plugins/livereload')(app);
+require('./plugins/cookieParser')(app);
 require('./routes')(app);
 
 // const Router = require("./routes/index");
