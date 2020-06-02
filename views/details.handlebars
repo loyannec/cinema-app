@@ -1,5 +1,4 @@
 <div class="mt-5">
-    
     <ul class="nav justify-content-end">
         <li class="nav-item">
             <a class="nav-link" href="/">Movies Home</a>
@@ -13,8 +12,6 @@
         </li>
 
     </ul>
-   
-    
     <div class="row">
         <div class="col-sm-4"><a href="{{response.poster_path}}"><img src="{{response.poster_path}}" alt="Poster Image"></a></div>
         <div class="col-sm-8">
@@ -35,21 +32,20 @@
                         <form action="/userrating" method="POST">
                             <div class="form-group">
                                 <input type="radio" name="rating" value="5" id="5">
-                                <label for="5">☆☆☆☆☆</label> 
+                                <label for="5">☆☆☆☆☆</label>
                                 <input type="radio" name="rating" value="4" id="4">
-                                <label for="4">☆☆☆☆</label> 
+                                <label for="4">☆☆☆☆</label>
                                 <input type="radio" name="rating" value="3" id="3">
-                                <label for="3">☆☆☆</label> 
+                                <label for="3">☆☆☆</label>
                                 <input type="radio" name="rating" value="2" id="2">
-                                <label for="2">☆☆</label> 
+                                <label for="2">☆☆</label>
                                 <input type="radio" name="rating" value="1" id="1">
                                 <label for="1">☆</label>
                             </div>
-                            <button type="submit" class="btn btn-outline-primary" onclick="submitUserRating()">Rate this movie </button> 
+                            <button type="submit" class="btn btn-outline-primary" onclick="submitUserRating()">Rate this movie </button>
                     {{else}}
                         <p>User rating :☆ </p>
                     {{/if}}
-                    
                         </form>
                     </div>
                 </li>
