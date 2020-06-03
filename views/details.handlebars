@@ -1,5 +1,4 @@
 <div class="mt-5">
-    
     <ul class="nav justify-content-end">
         <li class="nav-item">
             <a class="nav-link" href="/">Movies Home</a>
@@ -13,6 +12,7 @@
         </li>
 
     </ul>
+<<<<<<< HEAD
    <div>
         {{#if message}}
             <div class="alert {{messageClass}}" role="alert">
@@ -21,6 +21,8 @@
         {{/if}}
    </div>
     
+=======
+>>>>>>> 71566e69b39f953b201af57a71ac81b949f069a7
     <div class="row">
         <div class="col-sm-4"><a href="{{response.poster_path}}"><img src="{{response.poster_path}}" alt="Poster Image"></a></div>
         <div class="col-sm-8">
@@ -43,11 +45,11 @@
                                 <input type="radio" name="rating" value="5" id="5" >
                                 <label for="5">☆☆☆☆☆</label> 
                                 <input type="radio" name="rating" value="4" id="4">
-                                <label for="4">☆☆☆☆</label> 
+                                <label for="4">☆☆☆☆</label>
                                 <input type="radio" name="rating" value="3" id="3">
-                                <label for="3">☆☆☆</label> 
+                                <label for="3">☆☆☆</label>
                                 <input type="radio" name="rating" value="2" id="2">
-                                <label for="2">☆☆</label> 
+                                <label for="2">☆☆</label>
                                 <input type="radio" name="rating" value="1" id="1">
                                 <label for="1">☆</label>
                             </div>
@@ -55,7 +57,6 @@
                     {{else}}
                         <p>User rating :☆ </p>
                     {{/if}}
-                    
                         </form>
                     </div>
                 </li>
