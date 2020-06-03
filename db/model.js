@@ -10,6 +10,17 @@ const usermodel={
             res(result);
         });
     },
+
+    /* Insert user rating data to the userrating table. */
+    insertUserRating : ([userid, user_rating, movieid],res)=>{
+        let sql = "INSERT INTO movieschema.userrating(userid, user_rating, movieid) VALUES (?) ";
+        let values = [userid, user_rating, movieid];
+        db.query(sql, [values],(err,result)=>{
+            if(err) throw err;
+            console.log("No of Rows inserted into table successfully is : " +result.affectedRows);
+            res(result);
+        });
+    },
      validateEmail: (email,result) => {
         let sql ="Select userid,emailaddress,password from movieschema.users where emailaddress =?";
         db.query(sql,email,(err,resdata)=>{
