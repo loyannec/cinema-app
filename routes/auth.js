@@ -27,6 +27,7 @@ const auth= {
     res.cookie('access_token',token);
     next();
   },
+
   verifyAuthToken: (req, res,next) => {
     const token=req.cookies.access_token;
     console.log("Token in verify"+token)
@@ -38,10 +39,8 @@ const auth= {
         console.log("Token is present ")
         req.id=decoded.userID;
         console.log("ID is present "+req.id);
-        
     }
     next();
-      
   },
 
   unsetAuthToken: (req, res) => {
@@ -53,31 +52,6 @@ const auth= {
       messageClass: 'alert-success'
     });
   },
-
-  /* getSessionUser: (req, res) => {
-    // todo
-    console.log("Iside session method")
-    res.session({
-      name: SESSION_NAME,
-      resave: false,
-      saveUninitialized: false,
-      secret:SESSION_SECRET,
-      cookie:{
-        maxAge:SESSION_EXPIRY,
-        sameSite:true,
-        secure:true
-      }
-    });
-  },
-
-  verifyauthToken: (req,res,next) => {
-    console.log("verifyauthToken method");
-    const token = res.cookie.access_token;
-    console.log("access_token"+token);
-    
-    
-  },
- */
   
 };
 module.exports=auth;

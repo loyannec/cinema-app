@@ -7,7 +7,7 @@ const {getHomePage,getLoginPage,submitUserRating,verifyLogin,getMoviePage,getReg
 const {verifyAuthToken,setAuthToken,unsetAuthToken}= require('../routes/auth');
 
 /* GET home page. */
-app.get('/', getHomePage); 
+app.get('/',verifyAuthToken, getHomePage); 
 //router.get('/',getHomePage);
 
 /*Display Home page*/
@@ -22,8 +22,10 @@ app.post('/login',[verifyLogin,setAuthToken],getHomePage);
 app.get('/movie/:id', verifyAuthToken,getMoviePage); 
 //router.get('/movie/:id',verifyAuthToken,getMoviePage);
 
+
+
 /*Display respective Movie Page*/
-app.post('/userrating',submitUserRating); 
+app.post('/userrating',verifyAuthToken,submitUserRating); 
 //router.post('/userrating',submitUserRating);
 
 /*Display Register page*/
@@ -33,5 +35,8 @@ app.get('/register',getRegisterPage);
 /*Submits User details*/
 app.post('/register',submitUserRegistration); 
 //router.post('/register',submitUserRegistration);
-    
+
+/* Log out user and display login page. */  
+app.get('/logout', verifyAuthToken,unsetAuthToken);
+
 };
