@@ -1,5 +1,5 @@
 const axios = require('axios');
-const {getHashedPassword,validateEmail,getUserIdAndEmail,validateUserEmail,createUser}= require('../db/model');
+const {getHashedPassword,validateEmail,getUserIdAndEmail,validateUserEmail,createUser,insertUserRating}= require('../db/model');
 const moviescontroller={
     
     /*Display HomePage Page */
@@ -8,8 +8,8 @@ const moviescontroller={
         var user_active = true;
         if(req.userID == undefined)
             user_active=false;
-        
-        axios.get('https://api.themoviedb.org/4/list/144312?page=1&api_key=018c2d9e388d0d660de2ccf185361556')
+        axios.get('https://api.themoviedb.org/3/trending/all/day?api_key=018c2d9e388d0d660de2ccf185361556')
+        //axios.get('https://api.themoviedb.org/4/list/144312?page=1&api_key=018c2d9e388d0d660de2ccf185361556')
         //axios.get('http://www.omdbapi.com/?i=tt3896198&apikey=1a4537ef')
         .then(response => {
             //console.log(response.data.Poster);
@@ -17,10 +17,6 @@ const moviescontroller={
             res.render('home', { 
                 title: 'Cinema',
                 user_active,
-                /* resposter:response.data.Poster,
-                resmovietitlle:response.data.Title,
-                rescommunityscore:response.data.imdbRating,
-                resuserscount:response.data.imdbVotes */
                 response:response.data.results,
                 responselength:response.data.results.length > 0
             });
@@ -97,6 +93,8 @@ const moviescontroller={
     getMoviePage:(req,res)=> {
         const {id}=req.params;
         console.log("USER LOGGED in getMoviePage:"+req.id);
+        console.log("MOVIE ID in getMoviePage:"+req.params.id);
+        
         var user_active = true;
         if(req.id == undefined)
             user_active=false;
@@ -107,13 +105,12 @@ const moviescontroller={
         .then(response => {
             //console.log(response.data.Poster);
             console.log(response);
+            const movieIDValue=req.params.id;
+            req.movieID=movieIDValue;
+            
             res.render('details', {
                 title: 'Movie Details',
                 user_active,
-                /* resposter:response.data.Poster,
-                resmovietitlle:response.data.Title,
-                rescommunityscore:response.data.imdbRating,
-                resuserscount:response.data.imdbVotes */
                 response:response.data,
                 
             });
@@ -204,10 +201,26 @@ const moviescontroller={
     
     /*Register User details*/
     submitUserRating:(req, res) => {
-        const request= req.body;
-        const {id}=req.params;
-        console.log("USER RATING IS :"+request.rating);
-        res.redirect('/')
+        const {rating,RatedMovie}= req.body;
+           const activeuserid= req.id[0];
+        console.log("USER RATING IS :"+rating+RatedMovie);
+        
+        if (rating == undefined){
+            res.render('details',{
+                message:'Please provide userrating for the movie.',
+                messageClass:'alert-danger'
+            });
+        }
+        console.log("USER LOGGED in submitUserRating:"+req.id[0]);
+        insertUserRating([activeuserid,rating,RatedMovie],(result)=> {
+            console.log("After inserting no of Rows inserted into table successfully is : " +result.affectedRows);
+            const ratebutton = false;
+            res.render('details',{
+                ratebutton,
+                message:'Thanks for providing userrating!',
+                messageClass:'alert-success'
+            });
+        });
     }
     
 };
