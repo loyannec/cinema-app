@@ -6,14 +6,20 @@
         </li>
         <li class="nav-item">
             {{#if user_active}}
-                <a class="nav-link" href="/login">Logout</a>
+                <a class="nav-link" href="/logout">Logout</a>
             {{else}}
                 <a class="nav-link" href="/login">Login</a>
             {{/if}}
         </li>
 
     </ul>
-   
+   <div>
+        {{#if message}}
+            <div class="alert {{messageClass}}" role="alert">
+                {{message}}
+            </div>
+        {{/if}}
+   </div>
     
     <div class="row">
         <div class="col-sm-4"><a href="{{response.poster_path}}"><img src="{{response.poster_path}}" alt="Poster Image"></a></div>
@@ -33,8 +39,8 @@
                     {{#if user_active}}
                         <div class="rating">
                         <form action="/userrating" method="POST">
-                            <div class="form-group">
-                                <input type="radio" name="rating" value="5" id="5">
+                            <div class="form-group" aria-required="true">
+                                <input type="radio" name="rating" value="5" id="5" >
                                 <label for="5">☆☆☆☆☆</label> 
                                 <input type="radio" name="rating" value="4" id="4">
                                 <label for="4">☆☆☆☆</label> 
@@ -45,7 +51,7 @@
                                 <input type="radio" name="rating" value="1" id="1">
                                 <label for="1">☆</label>
                             </div>
-                            <button type="submit" class="btn btn-outline-primary" onclick="submitUserRating()">Rate this movie </button> 
+                            <button type="submit" name="RatedMovie" class="btn btn-outline-primary" value="{{response.id}}" >Rate this movie </button> 
                     {{else}}
                         <p>User rating :☆ </p>
                     {{/if}}
