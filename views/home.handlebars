@@ -1,3 +1,15 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script >
+$(document).ready(function(){
+    console.log("inside ajax call")
+    $("#searchbutton").click(function(){
+        alert("Text: " + $("#movietitle").val());
+        $.get("http://localhost:3000/searchmovie", function(data, status){
+        console.log("status:"+status);
+    });
+  
+  });
+</script>
 <div class="container"  style="margin-top: 30px">
     <ul class="nav justify-content-end">
         <li class="nav-item">
@@ -14,10 +26,11 @@
     <h2>Movies List</h2>
     <p>Type something in the input field to search for the movie by title,genre.</p>
     <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="Search for a movie by title">
+        <input type="text" class="form-control" placeholder="Search for a movie by title" id="movietitle">
         <div class="input-group-append">
-            <button class="btn btn-success" type="submit">Go</button>
+            <button class="btn btn-success" type="submit" id="searchbutton">Go</button>
         </div>
+        
     </div>
     <br>
     <table class="table table-bordered table-striped">
