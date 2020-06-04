@@ -10,6 +10,7 @@ const {verifyAuthToken,setAuthToken,unsetAuthToken}= require('../routes/auth');
 app.get('/',verifyAuthToken, getHomePage); 
 //router.get('/',getHomePage);
 
+app.get('/searchmovie',verifyAuthToken, getHomePage); 
 /*Display Home page*/
 app.get('/login', getLoginPage); 
 //router.get('/login', getLoginPage);
