@@ -3,14 +3,14 @@ const axios = require('axios');
 var express = require('express');
  
 //var router = express.Router();
-const {getHomePage,getLoginPage,submitUserRating,verifyLogin,getMoviePage,getRegisterPage,submitUserRegistration}= require('../controllers/moviescontroller');
+const {getHomePage,getLoginPage,submitUserRating,retrieveMovieListFromApi,verifyLogin,getMoviePage,getRegisterPage,submitUserRegistration}= require('../controllers/moviescontroller');
 const {verifyAuthToken,setAuthToken,unsetAuthToken}= require('../routes/auth');
 
 /* GET home page. */
 app.get('/',verifyAuthToken, getHomePage); 
 //router.get('/',getHomePage);
 
-app.get('/searchmovie',verifyAuthToken, getHomePage); 
+app.get('/searchmovie',verifyAuthToken, retrieveMovieListFromApi); 
 /*Display Home page*/
 app.get('/login', getLoginPage); 
 //router.get('/login', getLoginPage);
@@ -23,10 +23,9 @@ app.post('/login',[verifyLogin,setAuthToken],getHomePage);
 app.get('/movie/:id', verifyAuthToken,getMoviePage); 
 //router.get('/movie/:id',verifyAuthToken,getMoviePage);
 
-
-
+//app.get('/userrating/:id', verifyAuthToken,getMoviePage); 
 /*Display respective Movie Page*/
-app.post('/userrating',verifyAuthToken,submitUserRating); 
+app.post('/userrating/',verifyAuthToken,submitUserRating); 
 //router.post('/userrating',submitUserRating);
 
 /*Display Register page*/
