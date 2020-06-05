@@ -1,18 +1,42 @@
 const axios = require('axios');
-const {getHashedPassword,validateEmail,getUserIdAndEmail,validateUserEmail,createUser,insertUserRating}= require('../db/model');
+const {getHashedPassword,validateEmail,getUserIdAndEmail,validateUserEmail,createUser,validateUserRating,insertUserRating}= require('../db/model');
 const moviescontroller={
     
+    retrieveMovieListFromApi:(req, res)=> {
+        console.log("USER LOGGED in retrieveMovieListFromApi :"+req.userID);
+        var user_active = true;
+        if(req.userID == undefined)
+            user_active=false;
+        axios.get('https://api.themoviedb.org/3/search/movie?api_key=018c2d9e388d0d660de2ccf185361556&language=en-US&query=kids&page=1&include_adult=false')
+        //axios.get('https://api.themoviedb.org/3/trending/all/day?api_key=018c2d9e388d0d660de2ccf185361556')
+        //axios.get('https://api.themoviedb.org/4/list/144312?page=1&api_key=018c2d9e388d0d660de2ccf185361556')
+        //axios.get('http://www.omdbapi.com/?i=tt3896198&apikey=1a4537ef')
+        .then(response => {
+            //console.log(response.data.Poster);
+            console.log(response);
+            res.send(response.json());
+          // return Object.values(response.data.results);
+            /* res.render('home', { 
+                user_active,
+                response:response.data.results,
+                responselength:response.data.results.length > 0
+            }); */
+        })
+        .catch(error => {
+         console.log(error);
+         }); 
+        
+    },
+
+
     /*Display HomePage Page */
-    getHomePage:(req, res)=> {
+     getHomePage:(req, res)=> {
         console.log("USER LOGGED in getHomePage :"+req.userID);
         var user_active = true;
         if(req.userID == undefined)
             user_active=false;
         axios.get('https://api.themoviedb.org/3/trending/all/day?api_key=018c2d9e388d0d660de2ccf185361556')
-        //axios.get('https://api.themoviedb.org/4/list/144312?page=1&api_key=018c2d9e388d0d660de2ccf185361556')
-        //axios.get('http://www.omdbapi.com/?i=tt3896198&apikey=1a4537ef')
         .then(response => {
-            //console.log(response.data.Poster);
             console.log(response);
             res.render('home', { 
                 title: 'Cinema',
@@ -31,33 +55,7 @@ const moviescontroller={
     getLoginPage:(req, res)=> {
         res.render('login');
     },
-    /*Display MoviesHome Page*/
-   /*  getMoviesHomePage:(req, res)=> {
-        console.log("USER LOGGED with login :"+req.userID);
-        axios.get('https://api.themoviedb.org/3/trending/all/day?api_key=018c2d9e388d0d660de2ccf185361556')
-        //axios.get('http://www.omdbapi.com/?i=tt3896198&apikey=1a4537ef')
-        .then(response => {
-            //console.log(response.data.Poster);
-            console.log(response);
-            res.render('index', {
-                title: 'Cinema',
-                active:true,
-                 resposter:response.data.Poster,
-                resmovietitlle:response.data.Title,
-                rescommunityscore:response.data.imdbRating,
-                resuserscount:response.data.imdbVotes 
-                response:response.data.results,
-                responselength:response.data.results.length > 0
-                
-            });
-        })
-        .catch(error => {
-            console.log(error);
-        }); 
-
-        
-    }, */
-    /*Verify User Details */
+      /*Verify User Details */
     verifyLogin :(req, res,next)=> {
         const {email,password}=req.body;
         const hashedPassword = getHashedPassword(password);
@@ -88,36 +86,53 @@ const moviescontroller={
         })
     }, 
      
-   
+    retrieveUserRating:(req,res)=> {
+        console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&");
+        console.log("MOVIE ID:"+req.body.movieIDValue);
+
+        res.send('Hello');
+    },
     /*Display MoviePage */
     getMoviePage:(req,res)=> {
         const {id}=req.params;
         console.log("USER LOGGED in getMoviePage:"+req.id);
         console.log("MOVIE ID in getMoviePage:"+req.params.id);
-        
+        let userID = req.id[0];
+        let movieID = id;
         var user_active = true;
         if(req.id == undefined)
             user_active=false;
-        //https://api.themoviedb.org/3/movie/<movie-id>?api_key=<APIKEY>
-        console.log("Id value is:"+id)
-        axios.get(`https://api.themoviedb.org/3/movie/${id}?api_key=018c2d9e388d0d660de2ccf185361556`)
-        //axios.get('http://www.omdbapi.com/?i=tt3896198&apikey=1a4537ef')
-        .then(response => {
-            //console.log(response.data.Poster);
-            console.log(response);
-            const movieIDValue=req.params.id;
-            req.movieID=movieIDValue;
-            
-            res.render('details', {
-                title: 'Movie Details',
-                user_active,
-                response:response.data,
+            validateUserRating([userID,movieID],resvalue=>{
+                console.log("Inside valid userrating method"+JSON.stringify(resvalue));
+                var userRatingValue=false;
+                var userRatingFromDB='';
+                if(resvalue[0] == undefined){
+                    console.log("User rating not present")
+                    userRatingValue=false;
+
+                }else{
+                    console.log("User rating present"+resvalue[0]);
+                    userRatingValue=true;
+                    userRatingFromDB=Object.values(resvalue[0]);
+                }
                 
+                axios.get(`https://api.themoviedb.org/3/movie/${id}?api_key=018c2d9e388d0d660de2ccf185361556`)
+                .then(response => {
+                    //console.log(response.data.Poster);
+                    console.log(response);
+                    res.render('details', {
+                        title: 'Movie Details',
+                        user_active,
+                        id,
+                        userRatingValue,
+                        userRatingFromDB,
+                        response:response.data,
+                    });
+                })
+                .catch(error => {
+                     console.log(error);
+                }); 
             });
-        })
-        .catch(error => {
-            console.log(error);
-        }); 
     },
     /*Display Register Form */
     getRegisterPage:(req, res)=> {
@@ -201,9 +216,9 @@ const moviescontroller={
     
     /*Register User details*/
     submitUserRating:(req, res) => {
-        const {rating,RatedMovie}= req.body;
+        const {rating,ID}= req.body;
            const activeuserid= req.id[0];
-        console.log("USER RATING IS :"+rating+RatedMovie);
+        console.log("USER RATING IS :"+rating+ID);
         
         if (rating == undefined){
             res.render('details',{
@@ -212,15 +227,19 @@ const moviescontroller={
             });
         }
         console.log("USER LOGGED in submitUserRating:"+req.id[0]);
-        insertUserRating([activeuserid,rating,RatedMovie],(result)=> {
+        insertUserRating([activeuserid,rating,ID],(result)=> {
             console.log("After inserting no of Rows inserted into table successfully is : " +result.affectedRows);
-            const ratebutton = false;
-            res.render('details',{
+            //const ratebutton = false;
+           /*  res.render('details',{
                 ratebutton,
                 message:'Thanks for providing userrating!',
                 messageClass:'alert-success'
-            });
+            }); */
+            console.log(JSON.stringify(result));
+            //res(result);
+            res.send(result);
         });
+        
     }
     
 };
