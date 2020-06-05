@@ -1,4 +1,4 @@
-<div class="container"  style="margin-top: 30px">
+< class="container"  style="margin-top: 30px">
     <ul class="nav justify-content-end">
         <li class="nav-item">
             <a class="nav-link" href="/">Home</a>
@@ -19,7 +19,6 @@
             <button class="btn btn-success" type="submit" id="searchbutton">Go</button>
         </div>
     </div>
-    <br>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -30,22 +29,7 @@
             </tr>
         </thead>
         <tbody id="myTable">
-            <tr>
-                {{#if responselength}}
-                    {{#each response}}
-                        <tr>
-                            <td><a href="/movie/{{this.id}}"><img src="https://image.tmdb.org/t/p/w185/{{this.poster_path}}" alt="Poster Image"></a></td>
-                            <td>{{this.title}}</td>
-                            <td>{{this.vote_average}}</td>
-                            <td>{{this.vote_count}}</td>
-                        </tr>
-                    {{/each}}
-                {{else}}
-                <tr>
-                     <td>Empty list</td>
-                </tr>
-                {{/if}}
-            </tr>
+            {{> movies}}
         </tbody>
     </table>
 </div>
