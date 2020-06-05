@@ -53,6 +53,17 @@ const usermodel = {
             result(Object.values(count[0]));
         });
     },
+    
+    /* To prevent the overlap of rating into the table. */
+    validateUserRating: ([userId,movieID],res)=>{
+        console.log("values are:"+userId+movieID);
+        let sql ="SELECT user_rating from movieschema.userrating where userid=? and movieid=?"
+        db.query(sql,[userId,movieID],(err,result)=>{
+            if (err) throw err;
+            console.log("Value from database"+JSON.stringify(result));
+            res(result);
+        });
+    },
 
     getHashedPassword: (password) => {
         const sha256 = crypto.createHash('sha256');
