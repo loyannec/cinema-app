@@ -1,61 +1,83 @@
 const axios = require('axios');
-const {getHashedPassword,validateEmail,getUserIdAndEmail,validateUserEmail,createUser,validateUserRating,insertUserRating}= require('../db/model');
-const moviescontroller={
-    
-    retrieveMovieListFromApi:(req, res)=> {
-        console.log("USER LOGGED in retrieveMovieListFromApi :"+req.userID);
+const {getHashedPassword, validateEmail, getUserIdAndEmail, validateUserEmail, createUser, insertUserRating} = require('../db/model');
+const moviescontroller = {
+
+    /*
+    Display HomePage Page
+    */
+    getHomePage: (req, res) => {
+        console.log("USER LOGGED in getHomePage :" + req.userID);
         var user_active = true;
         if(req.userID == undefined)
-            user_active=false;
-        axios.get('https://api.themoviedb.org/3/search/movie?api_key=018c2d9e388d0d660de2ccf185361556&language=en-US&query=kids&page=1&include_adult=false')
-        //axios.get('https://api.themoviedb.org/3/trending/all/day?api_key=018c2d9e388d0d660de2ccf185361556')
-        //axios.get('https://api.themoviedb.org/4/list/144312?page=1&api_key=018c2d9e388d0d660de2ccf185361556')
-        //axios.get('http://www.omdbapi.com/?i=tt3896198&apikey=1a4537ef')
-        .then(response => {
-            //console.log(response.data.Poster);
-            console.log(response);
-            res.send(response.json());
-          // return Object.values(response.data.results);
-            /* res.render('home', { 
-                user_active,
-                response:response.data.results,
-                responselength:response.data.results.length > 0
-            }); */
-        })
-        .catch(error => {
-         console.log(error);
-         }); 
-        
-    },
-
-
-    /*Display HomePage Page */
-     getHomePage:(req, res)=> {
-        console.log("USER LOGGED in getHomePage :"+req.userID);
-        var user_active = true;
-        if(req.userID == undefined)
-            user_active=false;
+            user_active = false;
         axios.get('https://api.themoviedb.org/3/trending/all/day?api_key=018c2d9e388d0d660de2ccf185361556')
         .then(response => {
             console.log(response);
-            res.render('home', { 
+            res.render('home', {
                 title: 'Cinema',
                 user_active,
                 response:response.data.results,
                 responselength:response.data.results.length > 0
+            }); 
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    },
+    /*
+    Search the content by title
+    */
+    searchMovie: (req, res) => {
+        console.log("USER LOGGED in getHomePage :"+req.userID);
+        var user_active = true;
+        if(req.userID == undefined)
+            user_active = false;
+        axios.get(`https://api.themoviedb.org/3/search/movie?api_key=018c2d9e388d0d660de2ccf185361556&query=${req.query.title}`)
+        .then(response => {
+            console.log(response);
+            res.render('partials/movies', {
+                layout: false,
+                response: response.data.results,
+                responselength: response.data.results.length > 0
             });
         })
         .catch(error => {
-         console.log(error);
-         }); 
-        
+            console.log(error);
+        });
     },
-    
-    /*Display Login Page */
-    getLoginPage:(req, res)=> {
+
+    /*
+    Search the content by genre
+    */
+    filterMovie: (req, res) => {
+        console.log("USER LOGGED in getHomePage :"+req.userID);
+        var user_active = true;
+        if(req.userID == undefined)
+            user_active=false;
+        axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=018c2d9e388d0d660de2ccf185361556&language=en-US&with_genres=${req.query.genres}`)
+        .then(response => {
+            console.log(response);
+            res.render('partials/movies', {
+                layout: false,                 // Render just movies
+                response: response.data.results,
+                responselength: response.data.results.length > 0
+            });
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    },
+
+    /*
+    Display Login Page
+    */
+    getLoginPage:(req, res) => {
         res.render('login');
     },
-      /*Verify User Details */
+
+    /*
+    Verify User Details
+    */
     verifyLogin :(req, res,next)=> {
         const {email,password}=req.body;
         const hashedPassword = getHashedPassword(password);
@@ -66,33 +88,28 @@ const moviescontroller={
                 res.render('login', {
                     message: 'Account doesnot exist!!Please register your account.',
                     messageClass: 'alert-danger'
-                }); 
+                });
             }else{
                 console.log("Account exists"+JSON.stringify(userdetails))
                 if(hashedPassword == userdetails[0].password){
                     res.status('200');
                     console.log("********VALID USER")
                     const userIdValue=Object.values(userdetails[0]);
-                    //res.locals.userID=userIdValue;
                     req.userID=userIdValue;
-                    next(); 
+                    next();
                 }else{
                     res.render('login', {
                     message: 'Password Mismatch!Please enter valid password.',
                     messageClass: 'alert-danger'
-                }); 
+                });
                 }
             }
         })
-    }, 
-     
-    retrieveUserRating:(req,res)=> {
-        console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&");
-        console.log("MOVIE ID:"+req.body.movieIDValue);
-
-        res.send('Hello');
     },
-    /*Display MoviePage */
+
+    /*
+    Display MoviePage
+    */
     getMoviePage:(req,res)=> {
         const {id}=req.params;
         console.log("USER LOGGED in getMoviePage:"+req.id);
@@ -134,19 +151,24 @@ const moviescontroller={
                 }); 
             });
     },
-    /*Display Register Form */
+
+    /*
+    Display Register Form
+    */
     getRegisterPage:(req, res)=> {
         res.render('registration');
     },
 
-    /*Register User details*/
+    /*
+    Register User details
+    */
     submitUserRegistration:(req, res) => {
         const { email, firstName,lastName, password, confirmPassword } = req.body;
        //Validations for User account
        const emailPattern="^[a-zA-Z0-9.!#$%£&'*+/=?^_`{|}~-]+@[a-zA-Z]+(\.)+([a-zA-Z]+)*$";
        const namePattern="^[a-zA-Z][a-zA-Z ]+[a-zA-Z]+$";
        const passwordPattern="^[A-Za-z0-9].{6,}"
-       
+
        console.log("Firstname "+firstName);
        console.log("Lastname "+lastName);
        console.log("Email "+email);
@@ -177,12 +199,11 @@ const moviescontroller={
                 message: 'Password must contain at least one number and one uppercase and lowercase letter, and at least 6 or more characters!',
                 messageClass: 'alert-danger'
             });
-         
+
         }else{
             //Check if password and conform password matches
             if (password === confirmPassword) {
                 // Check if user with the same email is also registered
-               
                 validateUserEmail([email],(result) =>{
                     console.log("result:"+result);
                     if (result > '0'){
@@ -193,7 +214,7 @@ const moviescontroller={
                     }
                     else{
                         const hashedPassword = getHashedPassword(password);
-                        // Store user into the database 
+                        // Store user into the database
                         createUser([lastName,firstName,email,hashedPassword],(result)=> {
                             console.log("After inserting no of Rows inserted into table successfully is : " +result.affectedRows);
                             res.render('login', {
@@ -203,7 +224,6 @@ const moviescontroller={
                         });
                     }
                 });
-                
             }else {
                 res.render('register', {
                     message: 'Password does not match.',
@@ -213,8 +233,9 @@ const moviescontroller={
         }
     },
 
-    
-    /*Register User details*/
+    /*
+    Register User details
+    */
     submitUserRating:(req, res) => {
         const {rating,ID}= req.body;
            const activeuserid= req.id[0];
@@ -241,6 +262,6 @@ const moviescontroller={
         });
         
     }
-    
 };
+
 module.exports=moviescontroller;

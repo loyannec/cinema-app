@@ -3,5 +3,4 @@ module.exports = (app) => {
 
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));                           // Define how form data should be encode.
-    app.use(express.static("Ajax"));
 };
