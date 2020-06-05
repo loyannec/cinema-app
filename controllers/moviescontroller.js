@@ -26,13 +26,13 @@ const moviescontroller = {
     },
 
     /*
-    Search the content by name
+    Search the content by title
     */
     searchMovie: (req, res) => {
         console.log("USER LOGGED in getHomePage :"+req.userID);
         var user_active = true;
         if(req.userID == undefined)
-            user_active=false;
+            user_active = false;
         axios.get(`https://api.themoviedb.org/3/search/movie?api_key=018c2d9e388d0d660de2ccf185361556&query=${req.query.title}`)
         .then(response => {
             console.log(response);
@@ -47,6 +47,27 @@ const moviescontroller = {
         });
     },
 
+    /*
+    Search the content by genre
+    */
+    filterMovie: (req, res) => {
+        console.log("USER LOGGED in getHomePage :"+req.userID);
+        var user_active = true;
+        if(req.userID == undefined)
+            user_active=false;
+        axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=018c2d9e388d0d660de2ccf185361556&language=en-US&with_genres=${req.query.genres}`)
+        .then(response => {
+            console.log(response);
+            res.render('partials/movies', {
+                layout: false,                 // Render just movies
+                response: response.data.results,
+                responselength: response.data.results.length > 0
+            });
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    },
 
     /*
     Display Login Page
@@ -54,32 +75,7 @@ const moviescontroller = {
     getLoginPage:(req, res) => {
         res.render('login');
     },
-    /*Display MoviesHome Page*/
-   /*  getMoviesHomePage:(req, res)=> {
-        console.log("USER LOGGED with login :"+req.userID);
-        axios.get('https://api.themoviedb.org/3/trending/all/day?api_key=018c2d9e388d0d660de2ccf185361556')
-        //axios.get('http://www.omdbapi.com/?i=tt3896198&apikey=1a4537ef')
-        .then(response => {
-            //console.log(response.data.Poster);
-            console.log(response);
-            res.render('index', {
-                title: 'Cinema',
-                active:true,
-                 resposter:response.data.Poster,
-                resmovietitlle:response.data.Title,
-                rescommunityscore:response.data.imdbRating,
-                resuserscount:response.data.imdbVotes
-                response:response.data.results,
-                responselength:response.data.results.length > 0
 
-            });
-        })
-        .catch(error => {
-            console.log(error);
-        });
-
-
-    }, */
     /*
     Verify User Details
     */
