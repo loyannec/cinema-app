@@ -1,5 +1,5 @@
 const axios = require('axios');
-const {getHashedPassword, validateEmail, getUserIdAndEmail, validateUserEmail, createUser, insertUserRating} = require('../db/model');
+const {getHashedPassword, validateEmail, getUserIdAndEmail, validateUserEmail,validateUserRating, createUser, insertUserRating} = require('../db/model');
 const moviescontroller = {
 
     /*
