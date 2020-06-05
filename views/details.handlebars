@@ -12,16 +12,11 @@
         </li>
 
     </ul>
-   <div>
-        {{#if message}}
-            <div class="alert {{messageClass}}" role="alert">
-                {{message}}
-            </div>
-        {{/if}}
-   </div>
+   
+    
     <div class="row">
-        <div class="col-sm-4"><a href="{{response.poster_path}}"><img src="{{response.poster_path}}" alt="Poster Image"></a></div>
-        <div class="col-sm-8">
+        <div class="col-sm-4"><a href="{{response.poster_path}}"><img src="https://image.tmdb.org/t/p/w185/{{response.poster_path}}" alt="Poster Image"></a></div>
+        <div class="col-sm-8" id="movieitems">
             <ul class="list-group">
                 <li class="list-group-item">
                     {{response.title}}
@@ -32,31 +27,87 @@
                 <li class="list-group-item">
                     {{response.overview}}
                 </li>
-
-                <li class="list-group-item">
-                    {{#if user_active}}
-                        <div class="rating">
-                        <form action="/userrating" method="POST">
-                            <div class="form-group" aria-required="true">
-                                <input type="radio" name="rating" value="5" id="5" >
-                                <label for="5">☆☆☆☆☆</label> 
-                                <input type="radio" name="rating" value="4" id="4">
-                                <label for="4">☆☆☆☆</label>
-                                <input type="radio" name="rating" value="3" id="3">
-                                <label for="3">☆☆☆</label>
-                                <input type="radio" name="rating" value="2" id="2">
-                                <label for="2">☆☆</label>
-                                <input type="radio" name="rating" value="1" id="1">
-                                <label for="1">☆</label>
-                            </div>
-                            <button type="submit" name="RatedMovie" class="btn btn-outline-primary" value="{{response.id}}" >Rate this movie </button> 
-                    {{else}}
-                        <p>User rating :☆ </p>
+                {{#if user_active}}
+                     {{#if userRatingValue}}
+                    <li class="list-group-item">
+                        User Rating:{{userRatingFromDB}}
+                    </li>
+                    {{else}} 
+                        <li class="list-group-item" >
+                            <input type="radio" name="rating" value="5" id="5">
+                            <label for="5">☆☆☆☆☆</label> 
+                            <input type="radio" name="rating" value="4" id="4">
+                            <label for="4">☆☆☆☆</label> 
+                            <input type="radio" name="rating" value="3" id="3">
+                            <label for="3">☆☆☆</label> 
+                            <input type="radio" name="rating" value="2" id="2">
+                            <label for="2">☆☆</label> 
+                            <input type="radio" name="rating" value="1" id="1">
+                            <label for="1">☆</label>
+                            <button type="submit" class="btn btn-outline-primary" id="userrating" value="{{response.id}}">Rate this movie </button> 
+                        </li>
                     {{/if}}
-                        </form>
-                    </div>
-                </li>
+                {{else}}
+                    <li id="invalidusermsg">
+                        Please Login to provide User rating!
+                    </li>
+                {{/if}}
             </ul>
         </div>
     </div>
 </div>
+<script >
+    $(document).ready(function(){
+        var ratingSubmitbutton = $("#userrating");
+        movieId = ratingSubmitbutton.val();
+        
+    $( window ).load("http://localhost:3000/movie/:"+movieId,function(result) {
+        console.log( "Load was performed."+result );
+    });
+   
+    $("#userrating").click(rateMovie);
+    function rateMovie()
+    {
+        var userRatingValue = $("input[name='rating']:checked").val();
+        if(userRatingValue != undefined || userRatingValue != null){
+            $.ajax({
+            // The URL for the request
+            url:"http://localhost:3000/userrating/",
+ 
+            // The data to send (will be converted to a query string)
+            data:{
+                rating:userRatingValue,
+                ID:movieId
+            },
+ 
+            // Whether this is a POST or GET request
+            type:"POST",
+ 
+            // The type of data we expect back
+            dataType :"json",
+        })
+            // Code to run if the request succeeds (is done);
+            // The response is passed to the function
+        .done(function( json ) {
+            console.log(json);
+            $('ul li:last').remove();
+            var new_li = $('<li>User Rating :</li>').addClass('list-group-item').append(userRatingValue);
+            new_li.insertAfter('ul li:last');   
+           
+        })
+            // Code to run if the request fails; the raw request and
+            // status codes are passed to the function
+        .fail(function( xhr, status, errorThrown ) {
+            alert( "Sorry,there was a problem!" );
+            console.log( "Error: " + errorThrown );
+            console.log( "Status: " + status );
+            console.dir( xhr );
+        })
+
+        }
+        else{
+            alert("Please enter valid rating!!");
+        }
+    }
+});
+</script>
