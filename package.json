@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/loyannec/cinema-app#readme",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "connect-livereload": "^0.6.1",
     "cookie-parser": "^1.4.5",
     "debug": "^4.1.1",
